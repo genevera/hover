@@ -1,8 +1,8 @@
-# API class
 require 'rest_client'
 require 'json'
 
 module Hover
+  # API class
   class Api
     URL = 'https://www.hover.com/api/'.freeze
     AUTH_URL = 'https://www.hover.com/signin/auth.json'.freeze
@@ -16,6 +16,7 @@ module Hover
       begin
         session = authenticate(username, password)
       rescue StandardError => e
+        puts e.message
         puts e.backtrace
       end
 
@@ -26,7 +27,8 @@ module Hover
     def authenticate(username, password)
       auth = { username: username, password: password }
       RestClient.post(AUTH_URL, auth) do |response, _request, _result|
-        raise StandardError, 'Failed to authenticate' unless response.code == 200
+        raise StandardError,
+              'Failed to authenticate' unless response.code == 200
         response.cookies['hoverauth']
       end
     end
